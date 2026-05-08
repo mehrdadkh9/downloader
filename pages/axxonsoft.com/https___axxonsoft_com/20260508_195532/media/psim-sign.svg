@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="clip-psim-sign">
+      <rect width="512" height="512"/>
+    </clipPath>
+  </defs>
+  <g id="psim-sign" clip-path="url(#clip-psim-sign)">
+    <g id="Group_320" data-name="Group 320" transform="translate(30.677)">
+      <path id="Path_164" data-name="Path 164" d="M450.646,370.541V141.464a26.922,26.922,0,0,0-13.487-23.36L238.811,3.6a27.08,27.08,0,0,0-26.975,0L13.487,118.1A27.006,27.006,0,0,0,0,141.464V370.541A26.922,26.922,0,0,0,13.487,393.9L211.836,508.4a27.08,27.08,0,0,0,26.975,0L437.159,393.9A27.091,27.091,0,0,0,450.646,370.541Z" transform="translate(0 -0.002)" fill="#fff"/>
+    </g>
+    <path id="Path_1111" data-name="Path 1111" d="M30.415,322.561V130.932L196.369,35.118l165.953,95.813v191.63L196.369,418.378ZM196.369,0,0,113.378V340.126L196.369,453.5,392.741,340.126V113.378Z" transform="translate(59.63 29.25)" fill="#4b6cb2"/>
+  </g>
+</svg>
