@@ -1,4 +1,4 @@
-# com.axxonsoft.an3_4.1.2(94)_MC-AC2_release.apk - Download Failed
+# com.axxonsoft.an3_4.1.2(94)_MC-AC2_release
 
 ---
 
@@ -6,29 +6,28 @@
 
 | Property | Value |
 |----------|-------|
-| **File** | `com.axxonsoft.an3_4.1.2(94)_MC-AC2_release.apk` |
-| **URL** | https://dl.axxonsoft.com/software/Mobile-Clients//com.axxonsoft.an3_4.1.2(94)_MC-AC2_release.apk |
-| **Date** | 2026-05-09 04:34:53 UTC |
-| **Status** | **FAILED** |
+| **Original File** | `com.axxonsoft.an3_4.1.2(94)_MC-AC2_release.apk` |
+| **Total Size** | **3 parts** - **93.80 MB** |
+| **Status** | **Complete (100%)** |
+| **Password Protected** | **NO** |
 
 ---
 
-## Error Details
+## Download Links
 
-```
-Download failed after 3 attempts. Last error: curl: (22) The requested URL returned error: 404
-```
+| # | File | Link |
+|---|------|------|
+| 1 | `com.axxonsoft.an3_4.1.2(94)_MC-AC2_release.z01` | [Download](https://github.com/mehrdadkh9/downloader/raw/main/downloads/com.axxonsoft.an3_4.1.2%2894%29_MC-AC2_release/com.axxonsoft.an3_4.1.2%2894%29_MC-AC2_release.z01) |
+| 2 | `com.axxonsoft.an3_4.1.2(94)_MC-AC2_release.z02` | [Download](https://github.com/mehrdadkh9/downloader/raw/main/downloads/com.axxonsoft.an3_4.1.2%2894%29_MC-AC2_release/com.axxonsoft.an3_4.1.2%2894%29_MC-AC2_release.z02) |
+| 3 | `com.axxonsoft.an3_4.1.2(94)_MC-AC2_release.zip` | [Download](https://github.com/mehrdadkh9/downloader/raw/main/downloads/com.axxonsoft.an3_4.1.2%2894%29_MC-AC2_release/com.axxonsoft.an3_4.1.2%2894%29_MC-AC2_release.zip) |
 
 ---
 
-## Possible Solutions
+## How to Extract
 
-- Check if the URL is correct and accessible
-- The file may have been removed or moved
-- The server may require authentication
-- For SourceForge: Try using the direct download link
-- Some servers block automated downloads (403 Forbidden)
-- Try again later if it is a temporary server issue
+1. **Download all parts** (`.zip`, `.z01`, `.z02`...)
+2. **Open** `com.axxonsoft.an3_4.1.2(94)_MC-AC2_release.zip` with WinRAR, 7-Zip, Ark, or any standard zip tool
+3. **Extract** — all parts combine automatically
 
 ---
 
