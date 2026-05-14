@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title> Home : The Official Microsoft IIS Site </title>
+    <link type="image/ico" href="/favicon.ico" />
+    <link href="/Content/downloads.css" rel="stylesheet" />
+
+    <script
+      type="text/javascript"
+      src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://js.monitor.azure.com/scripts/c/ms.analytics-web-4.min.js"
+    ></script>
+    <script>
+      var siteConsent = null;
+      const analytics = new oneDS.ApplicationInsights();
+      var config = {
+        instrumentationKey:
+          "4181d76f98054ec6a4a9b8e669b3d510-a9e74d90-c641-41b4-8498-056decd0ac58-7286",
+        channelConfiguration: {
+          // Post channel configuration
+          eventsLimitInMem: 5000,
+        },
+        propertyConfiguration: {
+          // Properties Plugin configuration
+          env: "PROD", // Environment can be set to PPE or PROD as needed.
+          gpcDataSharingOptIn: false, // Include the CCPA "GPC_DataSharingOptIn" property as false
+          callback: {
+            userConsentDetails:
+              typeof WcpConsent !== "undefined" &&
+              WcpConsent.siteConsent &&
+              typeof WcpConsent.siteConsent.getConsent === "function"
+                ? WcpConsent.siteConsent.getConsent
+                : undefined,
+          },
+        },
+        webAnalyticsConfiguration: {
+          // Web Analytics Plugin configuration
+          //urlCollectQuery:true,
+          autoCapture: {
+            scroll: true,
+            pageView: true,
+            onLoad: true,
+            onUnload: true,
+            click: true,
+            resize: true,
+            jsError: true,
+          },
+        },
+      };
+
+      //Initialize SDK
+      analytics.initialize(config, []);
+
+      window.addEventListener("DOMContentLoaded", function () {
+        manageCaliforniaPrivacy();
+        function onConsentChanged(categoryPreferences) {
+          console.log("onConsentChanged", categoryPreferences);
+        }
+        WcpConsent.init("en-US", "cookie-banner", function (err, _siteConsent) {
+          if (err != undefined) {
+            return err;
+          } else {
+            siteConsent = _siteConsent; //siteConsent is used to get the current consent
+
+            siteConsent.onConsentChanged(watchConsentChanges);
+
+            if (siteConsent.isConsentRequired) {
+              document.getElementsByClassName(
+                "manageCookieChoice",
+              )[0].style.display = "inline-block";
+            } else {
+              //$(".manageCookieChoice").css("display", "none");
+              document.getElementsByClassName(
+                "manageCookieChoice",
+              )[0].style.display = "none";
+            }
+          }
+        });
+
+        function getUserConsent() {
+          var userConsent = siteConsent.getConsent();
+          //response will look like this
+          //{"Required":true,"Analytics":true,"SocialMedia":false,"Advertising":false}
+        }
+        function dropSocialMediaCookies() {
+          if (
+            siteConsent.getConsentFor(WcpConsent.consentCategories.SocialMedia)
+          ) {
+            //Drop social media cookies
+          }
+        }
+        function watchConsentChanges(consents) {
+          //scan through the categories and take action based on user consent.
+          if (siteConsent.isConsentRequired) {
+            document.getElementsByClassName(
+              "manageCookieChoice",
+            )[0].style.display = "inline-block";
+          } else {
+            document.getElementsByClassName(
+              "manageCookieChoice",
+            )[0].style.display = "none";
+          }
+        }
+      });
+      function manageConsent() {
+        if (siteConsent.isConsentRequired) {
+          siteConsent.manageConsent();
+        }
+      }
+
+      function manageCaliforniaPrivacy() {
+        //Link is required in the footer to comply with the California Privacy Rights Act
+        let tZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (tZone.toLowerCase() == "america/los_angeles") {
+          document.getElementsByClassName(
+            "managePrivacyChoice",
+          )[0].style.display = "inline-block";
+        } else {
+          document.getElementsByClassName(
+            "managePrivacyChoice",
+          )[0].style.display = "none";
+        }
+      }
+
+      function clearCookie(name, domain, path) {
+        try {
+          function Get_Cookie(check_name) {
+            // first we'll split this cookie up into name/value pairs
+            // note: document.cookie only returns name=value, not the other components
+            var a_all_cookies = document.cookie.split(";"),
+              a_temp_cookie = "",
+              cookie_name = "",
+              cookie_value = "",
+              b_cookie_found = false;
+
+            for (let i = 0; i < a_all_cookies.length; i++) {
+              // now we'll split apart each name=value pair
+              a_temp_cookie = a_all_cookies[i].split("=");
+
+              // and trim left/right whitespace while we're at it
+              cookie_name = a_temp_cookie[0].replace(/^\s+|\s+$/g, "");
+
+              // if the extracted name matches passed check_name
+              if (cookie_name == check_name) {
+                b_cookie_found = true;
+                // we need to handle case where cookie has no value but exists (no = sign, that is):
+                if (a_temp_cookie.length > 1) {
+                  cookie_value = unescape(
+                    a_temp_cookie[1].replace(/^\s+|\s+$/g, ""),
+                  );
+                }
+                // note that in cases where cookie is initialized but no value, null is returned
+                return cookie_value;
+                break;
+              }
+              a_temp_cookie = null;
+              cookie_name = "";
+            }
+            if (!b_cookie_found) {
+              return null;
+            }
+          }
+
+          if (Get_Cookie(name)) {
+            var domain = domain || document.domain;
+            var path = path || "/";
+            var today = new Date();
+            var expiryDate = new Date();
+            expiryDate.setDate(today.getDate() - 2);
+            document.cookie =
+              name +
+              "=; expires=" +
+              expiryDate +
+              "; domain=" +
+              domain +
+              "; path=" +
+              path;
+          }
+        } catch (err) {}
+      }
+    </script>
+    <script id="uhf-footer-ccpa">
+      // Cross-domain iframe to read 3PAdsOptOut cookie from the microsoft.com domain.
+      (function () {
+        const PRIVACY_ORIGIN = "https://iisprivacy.microsoft.com";
+        const iFrame = document.createElement("iframe");
+        iFrame.style.width = "0";
+        iFrame.style.height = "0";
+        iFrame.style.position = "absolute";
+        iFrame.style.border = "none";
+        iFrame.src = PRIVACY_ORIGIN;
+
+        let messageEventListener;
+        window.optOutPromise = new Promise(function (resolve) {
+          messageEventListener = function (event) {
+            if (event.origin === PRIVACY_ORIGIN) {
+              const optOutEventData = event.data && event.data["3PAdsOptOut"];
+              if (typeof optOutEventData !== "undefined") {
+                resolve(optOutEventData === "1");
+              } else {
+                resolve(false);
+              }
+              window.removeEventListener("message", messageEventListener);
+              iFrame.remove();
+            }
+          };
+        });
+        window.addEventListener("message", messageEventListener);
+
+        window.addEventListener("DOMContentLoaded", function () {
+          document.body.appendChild(iFrame);
+        });
+      })();
+
+      // Detect GPC signal; if present the user has opted out — set immediately.
+      // Otherwise wait for the cross-domain iframe to relay the 3PAdsOptOut cookie value.
+      const globalPrivacyControlEnabled = navigator.globalPrivacyControl;
+
+      if (globalPrivacyControlEnabled) {
+        analytics
+          .getPropertyManager()
+          .getPropertiesContext().web.gpcDataSharingOptIn = false;
+      } else {
+        window.optOutPromise.then(function (isOptedOut) {
+          analytics
+            .getPropertyManager()
+            .getPropertiesContext().web.gpcDataSharingOptIn = !isOptedOut;
+        });
+      }
+    </script>
+    <script src="/Scripts/jquery-3.7.1.js"></script>
+    <script src="/Scripts/main.js"></script>
+  </head>
+
+  <body>
+    <div id="skiptocontent">
+      <a href="#hero" class="skip-content">skip to main content</a>
+    </div>
+    <div id="cookie-banner"></div>
+    <div class="container">
+      <main role="main" class="pb-3">
+
+<link href="/Content/home.css" rel="stylesheet" />
+<header id="header-site" class="full-width single-nav">
+    <div class="ms-logo">
+        <a aria-label="Expand to view navigation menu" class="icon-menu" href="javascript:0">
+            <span class="icon-bar">
+                <span class="icon-bar">
+                    <span class="icon-bar"></span>
+                </span>
+            </span>
+        </a>
+        <a href="https://www.microsoft.com" id="logo">
+            Microsoft
+        </a>
+    </div>
+    <nav id="nav-primary" aria-label="Primary navigation menu">
+        <a href="/" class="iis-logo">IIS</a>
+        <ul class="menu">
+            <li>
+                <a href="/" class="current">
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="https://docs.microsoft.com/en-us/IIS-Administration/">
+                    Manage
+                </a>
+            </li>
+            <li>
+                <a href="/downloads">
+                    Downloads
+                </a>
+
+
+            </li>
+            <li>
+                <a href="https://docs.microsoft.com/iis/" target="_blank" rel="noopener noreferrer">
+                    Learn
+                </a>
+            </li>
+            <li>
+                <a href="https://docs.microsoft.com/en-us/iis/configuration/" target="_blank" rel="noopener noreferrer">
+                    Reference
+                </a>
+            </li>
+            <li id="solutions-menu">
+                <a href="javascript:;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Solutions
+                    <span></span></a>
+                    <div>
+                        <ul>
+                            <li>Technologies</li>
+                            <li><a href="https://www.microsoft.com/net">.NET Framework</a></li>
+                            <li><a href="//www.asp.net">ASP.NET</a></li>
+                            <li><a href="https://php.iis.net/">PHP</a></li>
+                            <li><a href="https://www.microsoft.com/en-us/cloud-platform/windows-server">Windows Server</a>
+                            </li>
+                            <li><a href="https://www.microsoft.com/en-us/sql-server/">SQL Server</a></li>
+                            <li><a href="https://azure.microsoft.com/">Microsoft Azure</a></li>
+                        </ul>
+                        <ul>
+                            <li>Tools</li>
+                            <li><a href="https://visualstudio.microsoft.com/">Visual Studio</a></li>
+                            <li><a href="https://code.visualstudio.com/">Visual Studio Code</a></li>
+                            <li><a href="https://www.microsoft.com/web/downloads/platform.aspx">Web Platform Installer</a>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>Get Help:</li>
+                            <li><a href="https://forums.iis.net/">Ask a Question in our Forums</a></li>
+                            <li><a href="https://support.microsoft.com/en-US/contactus">More Help Resources</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <a href="https://blogs.iis.net/">
+                        Blogs
+                    </a>
+                </li>
+                <li class="last-child"><a href="https://forums.iis.net/">Forums</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="full-width">
+
+        <section id="hero" class="hero-home">
+            <header>
+                <h1>A flexible &amp; easy-to-manage web server.</h1>
+            </header>
+            <p>Internet Information Services (IIS) for Windows&reg; Server is a flexible, secure and manageable Web server
+                for
+                hosting anything on the Web. From media streaming to web applications, IIS's scalable and open architecture
+                is ready to handle the most demanding tasks.</p>
+                <p class="actions"><a class="btn" href="/overview">Get Started with IIS</a>
+                    <!--<a class="btn" href="https://manage.iis.net">Manage IIS</a>-->
+                </p>
+            </section>
+
+            <section class="announcments"><strong>ANNOUNCEMENTS:</strong>
+                <ul>
+                    <li><a href="/downloads/microsoft/iis-compression">IIS Compression module released</a></li>
+                    <li><a href="https://blogs.iis.net/iisteam/introducing-iis-cors-1-0">Introducing IIS CORS 1.0</a></li>
+                    <li><a href="https://blogs.iis.net/iisteam/url-rewrite-v2-1">URL Rewrite 2.1</a></li>
+                    <li><a
+                        href="https://blogs.iis.net/bariscaglar/iisadministration-powershell-cmdlets-new-feature-in-windows-10-server-2016">IIS
+                        PowerShell Cmdlets</a></li>
+                        <li><a href="https://blogs.iis.net/davidso/http2">HTTP/2 Support for IIS</a></li>
+                    </ul>
+                </section>
+                <div class="page two-right">
+                    <div class="col-mid">
+                        <section class="grouped-list">
+                            <header>
+                                <h3>Recent Blog Posts</h3>
+                                <ul class="group-nav">
+                                    <li style="padding-right:0px;"><a href="https://blogs.iis.net/">View All</a></li>
+                                </ul>
+                            </header>
+                            <article class="author-list">
+                                <header>
+                                    <h4><a href="https://blogs.iis.net:443/mvolo/Contents/Item/Display/1781">Fixing W3WP.exe memory
+                                        leaks is easier than you think</a></h4>
+                                        <p>Tuesday April 5, 2022 by mvolo</p><img src="/images/mvolo.jpg" alt="author" class="author">
+                                    </header>
+                                    <p>Memory leaks can be causing poor website performance, and blowing out your cloud hosting
+                                        costs.You can now easily reduce memory usage and fix memory leaks, check out our Diagnose
+                                        w3wp.exe memory us...</p>
+                                    </article>
+                                    <article class="author-list">
+                                        <header>
+                                            <h4><a href="https://blogs.iis.net:443/mvolo/Async-await-hangs-in-ASPNET-Core-MVC-and-WebAPI">Async
+                                                await hangs in ASP.NET Core, MVC and WebAPI</a></h4>
+                                                <p>Tuesday March 8, 2022 by mvolo</p><img src="/images/mvolo.jpg" alt="author" class="author">
+                                            </header>
+                                            <p>Debugging async hangs in ASP.NET core, MVC and WebAPI apps can be extra hard!To help, we added
+                                                async task support to LeanSentry hang diagnostics. Check out the Diagnose async hangs in ASP.NET
+                                                Core,...</p>
+                                            </article>
+                                            <article class="author-list">
+                                                <header>
+                                                    <h4><a href="https://blogs.iis.net:443/mvolo/You-may-be-massively-overpaying-for-your-CPUs">You
+                                                        may be massively overpaying for your CPUs</a></h4>
+                                                        <p>Wednesday February 23, 2022 by mvolo</p><img src="/images/mvolo.jpg" alt="author"
+                                                                                                        class="author">
+                                                    </header>
+                                                    <p>You could be throwing away 50-80% of your cloud instance CPU power, due to common .NET CPU
+                                                        overheads.Learn more about these and how to remove them to save on your cloud costs in our W3wp
+                                                        high CPU g...</p>
+                                                    </article>
+                                                </section>
+                                            </div>
+                                            <section class="col-right">
+                                                <nav class="nav-base" aria-label="Sidebar navigation menu">
+                                                    <h2 class="iconed"><span class="icon icon-windows">Windows</span>Featured Microsoft Supported Downloads
+                                                    </h2>
+                                                    <ul class="nav-numbered">
+                                                        <li><a
+                                                            href="//blogs.iis.net/roman/archive/2013/07/26/application-request-router-arr-3-0-rtm-is-now-available.aspx">Application
+                                                            Request Routing (ARR) 3.0</a></li>
+                                                            <li><a href="https://www.microsoft.com/en-us/download/details.aspx?id=43717">Web Deploy</a></li>
+                                                            <li><a href="/downloads/microsoft/url-rewrite">URL Rewrite</a></li>
+                                                        </ul>
+                                                        <h2 class="iconed"><span class="icon icon-user">User</span>Featured Community Downloads</h2>
+                                                        <ul class="nav-numbered">
+                                                            <li><a
+                                                                href="/downloads/community/2011/07/rtr-frontpage-server-extensions-for-iis-75-on-windows-server-2008-r2-and-windows-7">RTR
+                                                                FrontPage Server Extensions for IIS 7.5</a></li>
+                                                                <li><a href="/downloads/community/2013/05/servant-for-iis">Servant for IIS</a></li>
+                                                                <li><a href="/downloads/community/2013/05/iispeed">IISpeed</a></li>
+                                                            </ul>
+                                                        </nav>
+                                                    </section>
+                                                </div>
+                                            </div></main>
+      <footer id="footer-site" class="full-width">
+        <ul>
+          <li class="text-links">
+            This site is managed by Microsoft | &copy;&nbsp;2025&nbsp;Microsoft.
+            All rights reserved.
+          </li>
+          <li>
+            <a
+              href="https://go.microsoft.com/fwlink/?LinkId=521839"
+              data-mscc-ic="false"
+              >Privacy Statement</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://go.microsoft.com/fwlink/?linkid=2259814"
+              data-mscc-ic="false"
+              >Consumer Health Privacy</a
+            >
+          </li>
+          <li><a href="/terms-of-use" data-mscc-ic="false">Terms of Use</a></li>
+          <li><a href="/contact">Contact Us</a></li>
+          <li>
+            <a href="https://azure.microsoft.com/">Hosted on Microsoft Azure</a>
+          </li>
+          <li>
+            <a href="https://www.effectusmedia.com/?site=iis#contactus"
+              >Advertise with Us</a
+            >
+          </li>
+          <li style="display: none" class="manageCookieChoice">
+            <a
+              href="#"
+              onclick="
+                javascript: manageConsent();
+                return false;
+              "
+              data-s-object-id="footer"
+              >Manage cookies</a
+            >
+          </li>
+          <li style="display: none" class="managePrivacyChoice">
+            <a href="https://aka.ms/yourcaliforniaprivacychoices">
+              <svg
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                width="30px"
+                viewbox="0 0 30 14"
+                xml:space="preserve"
+              >
+                <title>
+                  California Consumer Privacy Act (CCPA) Opt-Out Icon
+                </title>
+                <path
+                  d="M7.4 12.8h6.8l3.1-11.6H7.4C4.2 1.2 1.6 3.8 1.6 7s2.6 5.8 5.8 5.8z"
+                  style="fill-rule: evenodd; clip-rule: evenodd; fill: #fff"
+                ></path>
+                <path
+                  d="M22.6 0H7.4c-3.9 0-7 3.1-7 7s3.1 7 7 7h15.2c3.9 0 7-3.1 7-7s-3.2-7-7-7zm-21 7c0-3.2 2.6-5.8 5.8-5.8h9.9l-3.1 11.6H7.4c-3.2 0-5.8-2.6-5.8-5.8z"
+                  style="fill-rule: evenodd; clip-rule: evenodd; fill: #06f"
+                ></path>
+                <path
+                  d="M24.6 4c.2.2.2.6 0 .8L22.5 7l2.2 2.2c.2.2.2.6 0 .8-.2.2-.6.2-.8 0l-2.2-2.2-2.2 2.2c-.2.2-.6.2-.8 0-.2-.2-.2-.6 0-.8L20.8 7l-2.2-2.2c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0l2.2 2.2L23.8 4c.2-.2.6-.2.8 0z"
+                  style="fill: #fff"
+                ></path>
+                <path
+                  d="M12.7 4.1c.2.2.3.6.1.8L8.6 9.8c-.1.1-.2.2-.3.2-.2.1-.5.1-.7-.1L5.4 7.7c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0L8 8.6l3.8-4.5c.2-.2.6-.2.9 0z"
+                  style="fill: #06f"
+                ></path>
+              </svg>
+              <span>Your Privacy Choices</span>
+            </a>
+          </li>
+        </ul>
+        <ul class="social">
+          <li>Follow us on:</li>
+          <li>
+            <a href="https://www.twitter.com/inetsrv/" class="twitter"
+              >Twitter</a
+            >
+          </li>
+          <li>
+            <a href="https://facebook.com/inetsrv/" class="facebook"
+              >Facebook</a
+            >
+          </li>
+        </ul>
+        <ul class="logo">
+          <li>
+            <a href="https://microsoft.com/" class="logo-footer">Microsoft</a>
+          </li>
+          <li>
+            <a href="https://forums.iis.net/1080.aspx">Feedback on IIS</a>
+          </li>
+        </ul>
+      </footer>
+    </div>
+  </body>
+</html>
